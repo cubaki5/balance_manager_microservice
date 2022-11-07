@@ -21,14 +21,14 @@ func main() {
 
 	e := echo.New()
 
-	fundRouter := e.Group("/fund_echo")
+	fundRouter := e.Group("/fund")
 	fundRouter.POST("/accrual", fundHandler.Accrue)
 	fundRouter.POST("/reservation", fundHandler.Reservation)
 	fundRouter.POST("/payment_acceptance", fundHandler.AcceptPayment)
 	fundRouter.POST("/payment_rejection", fundHandler.RejectPayment)
 	fundRouter.POST("/balance", fundHandler.GetBalance)
 
-	reportRouter := e.Group("/report_echo")
+	reportRouter := e.Group("/report")
 	reportRouter.POST("/accounting", reportHandler.Accounting)
 	reportRouter.POST("/transaction_history", reportHandler.TransactionHistory)
 

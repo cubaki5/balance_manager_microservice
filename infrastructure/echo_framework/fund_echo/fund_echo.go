@@ -1,13 +1,21 @@
 package fund_echo
 
-import "github.com/labstack/echo/v4"
+import (
+	"context"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
+
+	"balance_avito/models"
+)
 
 type Fund interface {
-	Accrue() error
-	Reservation() error
-	AcceptPayment() error
-	RejectPayment() error
-	GetBalance() error
+	Accrue(ctx context.Context, accrual models.Accrual) error
+	Reservation(ctx context.Context, reservation models.Reservation) error
+	AcceptPayment(ctx context.Context, reservation models.Reservation) error
+	RejectPayment(ctx context.Context, reservation models.Reservation) error
+	GetBalance(ctx context.Context, account models.Account) (models.Account, error)
 }
 
 type Handler struct {
@@ -19,21 +27,92 @@ func NewFundHandler(f Fund) *Handler {
 }
 
 func (h *Handler) Accrue(ctx echo.Context) error {
-	return nil
+	var accrual models.Accrual
+
+	err := ctx.Bind(&accrual)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	err = h.f.Accrue(ctx.Request().Context(), accrual)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return ctx.NoContent(http.StatusOK)
 }
 
 func (h *Handler) Reservation(ctx echo.Context) error {
-	return nil
+	var reservation models.Reservation
+
+	err := ctx.Bind(&reservation)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	err = h.f.Reservation(ctx.Request().Context(), reservation)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return ctx.NoContent(http.StatusOK)
 }
 
 func (h *Handler) AcceptPayment(ctx echo.Context) error {
-	return nil
+	var reservation models.Reservation
+
+	err := ctx.Bind(&reservation)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	err = h.f.AcceptPayment(ctx.Request().Context(), reservation)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return ctx.NoContent(http.StatusOK)
 }
 
 func (h *Handler) RejectPayment(ctx echo.Context) error {
-	return nil
+	var reservation models.Reservation
+
+	err := ctx.Bind(&reservation)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	err = h.f.RejectPayment(ctx.Request().Context(), reservation)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return ctx.NoContent(http.StatusOK)
 }
 
 func (h *Handler) GetBalance(ctx echo.Context) error {
-	return nil
+	var account models.Account
+
+	err := ctx.Bind(&account)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	account, err = h.f.GetBalance(ctx.Request().Context(), account)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return ctx.JSON(http.StatusOK, map[string]int64{"balance": account.Balance.Int64()})
+
 }

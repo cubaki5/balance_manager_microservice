@@ -1,5 +1,11 @@
 package fund_handlers
 
+import (
+	"context"
+
+	"balance_avito/models"
+)
+
 type Database interface {
 	Accrue() error
 	Reservation() error
@@ -16,27 +22,27 @@ func NewFund(db Database) *Fund {
 	return &Fund{db}
 }
 
-func (f *Fund) Accrue() error {
+func (f *Fund) Accrue(ctx context.Context, accrual models.Accrual) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (f *Fund) Reservation() error {
+func (f *Fund) Reservation(ctx context.Context, reservation models.Reservation) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (f *Fund) AcceptPayment() error {
+func (f *Fund) AcceptPayment(ctx context.Context, reservation models.Reservation) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (f *Fund) RejectPayment() error {
+func (f *Fund) RejectPayment(ctx context.Context, reservation models.Reservation) error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (f *Fund) GetBalance() error {
+func (f *Fund) GetBalance(ctx context.Context, account models.Account) (models.Account, error) {
 	//TODO implement me
 	panic("implement me")
 }
