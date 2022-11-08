@@ -1,7 +1,7 @@
 package models
 
 import (
-	"balance_avito/models/types"
+	"balance_avito/internal/models/types"
 )
 
 type Accrual struct {

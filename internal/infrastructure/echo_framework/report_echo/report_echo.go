@@ -4,7 +4,7 @@ import "github.com/labstack/echo/v4"
 
 type Report interface {
 	Accounting() error
-	TransactionHistory() error
+	TransactionsHistory() error
 }
 
 type Handler struct {
@@ -19,6 +19,6 @@ func (h *Handler) Accounting(ctx echo.Context) error {
 	return nil
 }
 
-func (h *Handler) TransactionHistory(ctx echo.Context) error {
+func (h *Handler) TransactionsHistory(ctx echo.Context) error {
 	return nil
 }

@@ -1,20 +1,26 @@
 package main
 
 import (
+	"log"
+
 	"github.com/labstack/echo/v4"
 
-	"balance_avito/handlers/fund_handlers"
-	"balance_avito/handlers/report_handlers"
-	"balance_avito/infrastructure/echo_framework/fund_echo"
-	"balance_avito/infrastructure/echo_framework/report_echo"
-	"balance_avito/infrastructure/sql_database/adapter"
+	"balance_avito/internal/handlers/fund_handlers"
+	"balance_avito/internal/handlers/report_handlers"
+	"balance_avito/internal/infrastructure/echo_framework/fund_echo"
+	"balance_avito/internal/infrastructure/echo_framework/report_echo"
+	"balance_avito/internal/infrastructure/sql_database/adapter"
 )
 
 func main() {
-	db := adapter.NewDatabase()
+	db, err := adapter.RunDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	dbAdapter := adapter.NewDatabaseAdapter(db)
 
-	fund := fund_handlers.NewFund(db)
-	report := report_handlers.NewReport(db)
+	fund := fund_handlers.NewFund(dbAdapter)
+	report := report_handlers.NewReport(dbAdapter)
 
 	fundHandler := fund_echo.NewFundHandler(fund)
 	reportHandler := report_echo.NewReportHandler(report)
@@ -30,7 +36,7 @@ func main() {
 
 	reportRouter := e.Group("/report")
 	reportRouter.POST("/accounting", reportHandler.Accounting)
-	reportRouter.POST("/transaction_history", reportHandler.TransactionHistory)
+	reportRouter.POST("/transactions_history", reportHandler.TransactionsHistory)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

@@ -2,7 +2,7 @@ package report_handlers
 
 type Database interface {
 	Accounting() error
-	TransactionHistory() error
+	TransactionsHistory() error
 }
 
 type Report struct {
@@ -18,7 +18,7 @@ func (r *Report) Accounting() error {
 	panic("implement me")
 }
 
-func (r *Report) TransactionHistory() error {
+func (r *Report) TransactionsHistory() error {
 	//TODO implement me
 	panic("implement me")
 }

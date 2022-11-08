@@ -1,11 +1,11 @@
 package adapter
 
-func (d *Database) Accounting() error {
+func (d *DatabaseAdapter) Accounting() error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d *Database) TransactionHistory() error {
+func (d *DatabaseAdapter) TransactionsHistory() error {
 	//TODO implement me
 	panic("implement me")
 }

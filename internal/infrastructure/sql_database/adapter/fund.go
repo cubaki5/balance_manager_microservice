@@ -1,26 +1,26 @@
 package adapter
 
-func (d *Database) Accrue() error {
+func (d *DatabaseAdapter) Accrue() error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d *Database) Reservation() error {
+func (d *DatabaseAdapter) Reservation() error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d *Database) AcceptPayment() error {
+func (d *DatabaseAdapter) AcceptPayment() error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d *Database) RejectPayment() error {
+func (d *DatabaseAdapter) RejectPayment() error {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (d *Database) GetBalance() error {
+func (d *DatabaseAdapter) GetBalance() error {
 	//TODO implement me
 	panic("implement me")
 }

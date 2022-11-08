@@ -3,7 +3,7 @@ package fund_handlers
 import (
 	"context"
 
-	"balance_avito/models"
+	"balance_avito/internal/models"
 )
 
 type Database interface {

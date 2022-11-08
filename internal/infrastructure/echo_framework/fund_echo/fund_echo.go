@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
+	"balance_avito/internal/models"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
-
-	"balance_avito/models"
 )
 
 type Fund interface {
@@ -113,6 +113,6 @@ func (h *Handler) GetBalance(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	return ctx.JSON(http.StatusOK, map[string]int64{"balance": account.Balance.Int64()})
+	return ctx.JSON(http.StatusOK, map[string]int32{"balance": account.Balance.Int32()})
 
 }
