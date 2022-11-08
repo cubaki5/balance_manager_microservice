@@ -23,7 +23,7 @@ func NewDatabaseAdapter(db *sql.DB) *DatabaseAdapter {
 }
 
 func RunDB() (*sql.DB, error) {
-	db, err := sql.Open("mysql", "user:password@/user_balance")
+	db, err := sql.Open("mysql", "cub:scamt@/usersbalance")
 	if err != nil {
 		return nil, err
 	}

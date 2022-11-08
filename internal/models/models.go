@@ -17,7 +17,6 @@ type Reservation struct {
 }
 
 type Account struct {
-	ID      types.AccountID
 	UserID  types.UserID `json:"user_id"`
 	Balance types.Balance
 }

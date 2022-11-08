@@ -36,10 +36,28 @@ func (q *Queries) CreateReservedAccount(ctx context.Context, arg CreateReservedA
 
 const deleteReservedAccount = `-- name: DeleteReservedAccount :exec
 DELETE FROM reserved_accounts
-WHERE order_id = ?
+WHERE order_id = ? LIMIT 1
 `
 
 func (q *Queries) DeleteReservedAccount(ctx context.Context, orderID int64) error {
 	_, err := q.db.ExecContext(ctx, deleteReservedAccount, orderID)
 	return err
+}
+
+const getReservedAccount = `-- name: GetReservedAccount :one
+SELECT id, user_id, order_id, service_id, cost FROM reserved_accounts
+WHERE order_id = ? LIMIT 1
+`
+
+func (q *Queries) GetReservedAccount(ctx context.Context, orderID int64) (ReservedAccount, error) {
+	row := q.db.QueryRowContext(ctx, getReservedAccount, orderID)
+	var i ReservedAccount
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.OrderID,
+		&i.ServiceID,
+		&i.Cost,
+	)
+	return i, err
 }

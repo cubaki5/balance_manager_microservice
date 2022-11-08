@@ -7,7 +7,7 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
 const createReportRow = `-- name: CreateReportRow :exec
@@ -20,7 +20,7 @@ INSERT INTO report_accounting (
 
 type CreateReportRowParams struct {
 	ServiceID int64
-	Date      sql.NullTime
+	Date      time.Time
 	Income    int32
 }
 
@@ -36,8 +36,8 @@ WHERE YEAR(date) = ? AND MONTH(date) = ?
 `
 
 type GetMonthReportParams struct {
-	Date   sql.NullTime
-	Date_2 sql.NullTime
+	Date   time.Time
+	Date_2 time.Time
 }
 
 type GetMonthReportRow struct {

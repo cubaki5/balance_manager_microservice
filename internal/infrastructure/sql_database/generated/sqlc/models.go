@@ -6,18 +6,17 @@ package sqlc
 
 import (
 	"database/sql"
+	"time"
 )
 
 type Account struct {
-	ID      int64
 	UserID  int64
 	Balance int32
 }
 
 type ReportAccounting struct {
-	ID        int64
 	ServiceID int64
-	Date      sql.NullTime
+	Date      time.Time
 	Income    int32
 }
 

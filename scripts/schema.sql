@@ -1,7 +1,14 @@
+USE usersbalance;
+
 CREATE TABLE IF NOT EXISTS accounts (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT UNSIGNED UNIQUE NOT NULL,
+    user_id BIGINT UNSIGNED UNIQUE NOT NULL PRIMARY KEY,
     balance MEDIUMINT UNSIGNED NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS report_accounting (
+    service_id BIGINT UNSIGNED UNIQUE NOT NULL PRIMARY KEY,
+    date DATE NOT NULL,
+    income INT UNSIGNED NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS reserved_accounts (
@@ -10,16 +17,10 @@ CREATE TABLE IF NOT EXISTS reserved_accounts (
     order_id BIGINT UNSIGNED UNIQUE NOT NULL,
     service_id BIGINT UNSIGNED NOT NULL,
     cost MEDIUMINT UNSIGNED NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES accounts(user_id),
-    FOREIGN KEY (service_id) REFERENCES report_accounting(service_id)
+    FOREIGN KEY (user_id) REFERENCES accounts(user_id)
 );
 
-CREATE TABLE IF NOT EXISTS report_accounting (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    service_id BIGINT UNSIGNED UNIQUE NOT NULL,
-    date DATE,
-    income INT UNSIGNED NOT NULL
-);
+
 
 CREATE TABLE IF NOT EXISTS transactions_history(
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

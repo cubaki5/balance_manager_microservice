@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"balance_avito/internal/models/types"
+
 	"balance_avito/internal/models"
 
 	"github.com/labstack/echo/v4"
@@ -15,7 +17,7 @@ type Fund interface {
 	Reservation(ctx context.Context, reservation models.Reservation) error
 	AcceptPayment(ctx context.Context, reservation models.Reservation) error
 	RejectPayment(ctx context.Context, reservation models.Reservation) error
-	GetBalance(ctx context.Context, account models.Account) (models.Account, error)
+	GetBalance(ctx context.Context, account models.Account) (types.Balance, error)
 }
 
 type Handler struct {
@@ -107,7 +109,7 @@ func (h *Handler) GetBalance(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	account, err = h.f.GetBalance(ctx.Request().Context(), account)
+	account.Balance, err = h.f.GetBalance(ctx.Request().Context(), account)
 	if err != nil {
 		log.Error(err)
 		return ctx.JSON(http.StatusBadRequest, err.Error())

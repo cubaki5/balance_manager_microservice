@@ -1,6 +1,6 @@
 -- name: DeleteReservedAccount :exec
 DELETE FROM reserved_accounts
-WHERE order_id = ?;
+WHERE order_id = ? LIMIT 1;
 
 -- name: CreateReservedAccount :exec
 INSERT INTO reserved_accounts (
@@ -8,3 +8,7 @@ INSERT INTO reserved_accounts (
 ) value (
     ?, ?, ?, ?
     );
+
+-- name: GetReservedAccount :one
+SELECT * FROM reserved_accounts
+WHERE order_id = ? LIMIT 1;

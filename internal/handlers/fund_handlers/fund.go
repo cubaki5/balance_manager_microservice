@@ -3,15 +3,17 @@ package fund_handlers
 import (
 	"context"
 
+	"balance_avito/internal/models/types"
+
 	"balance_avito/internal/models"
 )
 
 type Database interface {
-	Accrue() error
-	Reservation() error
-	AcceptPayment() error
-	RejectPayment() error
-	GetBalance() error
+	Accrue(ctx context.Context, accrual models.Accrual) error
+	Reservation(ctx context.Context, reservation models.Reservation) error
+	AcceptPayment(ctx context.Context, reservation models.Reservation) error
+	RejectPayment(ctx context.Context, reservation models.Reservation) error
+	GetBalance(ctx context.Context, account models.Account) (models.Account, error)
 }
 
 type Fund struct {
@@ -23,26 +25,26 @@ func NewFund(db Database) *Fund {
 }
 
 func (f *Fund) Accrue(ctx context.Context, accrual models.Accrual) error {
-	//TODO implement me
-	panic("implement me")
+	return f.db.Accrue(ctx, accrual)
 }
 
 func (f *Fund) Reservation(ctx context.Context, reservation models.Reservation) error {
-	//TODO implement me
-	panic("implement me")
+	return f.db.Reservation(ctx, reservation)
 }
 
 func (f *Fund) AcceptPayment(ctx context.Context, reservation models.Reservation) error {
-	//TODO implement me
-	panic("implement me")
+	return f.db.AcceptPayment(ctx, reservation)
 }
 
 func (f *Fund) RejectPayment(ctx context.Context, reservation models.Reservation) error {
-	//TODO implement me
-	panic("implement me")
+	return f.db.RejectPayment(ctx, reservation)
 }
 
-func (f *Fund) GetBalance(ctx context.Context, account models.Account) (models.Account, error) {
-	//TODO implement me
-	panic("implement me")
+func (f *Fund) GetBalance(ctx context.Context, account models.Account) (types.Balance, error) {
+	var err error
+	account, err = f.db.GetBalance(ctx, account)
+	if err != nil {
+		return 0, err
+	}
+	return account.Balance, nil
 }
