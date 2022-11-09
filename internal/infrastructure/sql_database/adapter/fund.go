@@ -11,7 +11,7 @@ import (
 )
 
 func (d *DatabaseAdapter) Accrue(ctx context.Context, accrual models.Accrual) error {
-	err := d.ExecTx(ctx, func(q *sqlc.Queries) error {
+	err := d.execTx(ctx, func(q *sqlc.Queries) error {
 		err := q.CreateAccountOrUpdateBalance(ctx, sqlc.CreateAccountOrUpdateBalanceParams{
 			UserID:    accrual.UserID.Int64(),
 			Balance:   accrual.Income.Int32(),
@@ -24,7 +24,7 @@ func (d *DatabaseAdapter) Accrue(ctx context.Context, accrual models.Accrual) er
 }
 
 func (d *DatabaseAdapter) Reservation(ctx context.Context, reservation models.Reservation) error {
-	err := d.ExecTx(ctx, func(q *sqlc.Queries) error {
+	err := d.execTx(ctx, func(q *sqlc.Queries) error {
 		dbAccount, err := q.GetAccount(ctx, reservation.UserID.Int64())
 		if err != nil {
 			return err
@@ -56,7 +56,7 @@ func (d *DatabaseAdapter) Reservation(ctx context.Context, reservation models.Re
 }
 
 func (d *DatabaseAdapter) AcceptPayment(ctx context.Context, reservation models.Reservation) error {
-	err := d.ExecTx(ctx, func(q *sqlc.Queries) error {
+	err := d.execTx(ctx, func(q *sqlc.Queries) error {
 		_, err := q.GetReservedAccount(ctx, reservation.OrderID.Int64())
 		if err != nil {
 			return err
@@ -67,10 +67,12 @@ func (d *DatabaseAdapter) AcceptPayment(ctx context.Context, reservation models.
 			return err
 		}
 
-		err = q.CreateReportRow(ctx, sqlc.CreateReportRowParams{
+		err = q.CreateOrUpdateReportRow(ctx, sqlc.CreateOrUpdateReportRowParams{
 			ServiceID: reservation.ServiceID.Int64(),
-			Date:      time.Now(),
+			Year:      int32(time.Now().Year()),
+			Month:     int32(time.Now().Month()),
 			Income:    reservation.Cost.Int32(),
+			Income_2:  reservation.Cost.Int32(),
 		})
 
 		return err
@@ -79,7 +81,7 @@ func (d *DatabaseAdapter) AcceptPayment(ctx context.Context, reservation models.
 }
 
 func (d *DatabaseAdapter) RejectPayment(ctx context.Context, reservation models.Reservation) error {
-	err := d.ExecTx(ctx, func(q *sqlc.Queries) error {
+	err := d.execTx(ctx, func(q *sqlc.Queries) error {
 		_, err := q.GetReservedAccount(ctx, reservation.OrderID.Int64())
 		if err != nil {
 			return err
@@ -101,7 +103,7 @@ func (d *DatabaseAdapter) RejectPayment(ctx context.Context, reservation models.
 }
 
 func (d *DatabaseAdapter) GetBalance(ctx context.Context, account models.Account) (models.Account, error) {
-	err := d.ExecTx(ctx, func(q *sqlc.Queries) error {
+	err := d.execTx(ctx, func(q *sqlc.Queries) error {
 		dbAccount, err := q.GetAccount(ctx, account.UserID.Int64())
 		if err != nil {
 			account = models.Account{}

@@ -1,5 +1,7 @@
 package types
 
+import "strconv"
+
 type (
 	UserID    int64
 	Income    int32
@@ -8,7 +10,25 @@ type (
 	Cost      int32
 	AccountID int64
 	Balance   int32
+	Year      int32
+	Month     int32
 )
+
+func (i Income) String() string {
+	return strconv.Itoa(int(i))
+}
+
+func (i ServiceID) String() string {
+	return strconv.Itoa(int(i))
+}
+
+func (i Month) Int32() int32 {
+	return int32(i)
+}
+
+func (i Year) Int32() int32 {
+	return int32(i)
+}
 
 func (i Balance) Int32() int32 {
 	return int32(i)

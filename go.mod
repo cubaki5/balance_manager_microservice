@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/gocarina/gocsv v0.0.0-20221105105431-c8ef78125b99
 	github.com/labstack/echo/v4 v4.9.1
 	github.com/labstack/gommon v0.4.0
 )

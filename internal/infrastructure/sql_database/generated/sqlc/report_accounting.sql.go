@@ -7,37 +7,45 @@ package sqlc
 
 import (
 	"context"
-	"time"
 )
 
-const createReportRow = `-- name: CreateReportRow :exec
+const createOrUpdateReportRow = `-- name: CreateOrUpdateReportRow :exec
 INSERT INTO report_accounting (
-    service_id, date, income
+    service_id, year, month, income
 ) VALUE (
-    ?, ?, ?
+    ?, ?, ?, ?
     )
+ON DUPLICATE KEY UPDATE income = income + ?
 `
 
-type CreateReportRowParams struct {
+type CreateOrUpdateReportRowParams struct {
 	ServiceID int64
-	Date      time.Time
+	Year      int32
+	Month     int32
 	Income    int32
+	Income_2  int32
 }
 
-func (q *Queries) CreateReportRow(ctx context.Context, arg CreateReportRowParams) error {
-	_, err := q.db.ExecContext(ctx, createReportRow, arg.ServiceID, arg.Date, arg.Income)
+func (q *Queries) CreateOrUpdateReportRow(ctx context.Context, arg CreateOrUpdateReportRowParams) error {
+	_, err := q.db.ExecContext(ctx, createOrUpdateReportRow,
+		arg.ServiceID,
+		arg.Year,
+		arg.Month,
+		arg.Income,
+		arg.Income_2,
+	)
 	return err
 }
 
 const getMonthReport = `-- name: GetMonthReport :many
 SELECT service_id, income
 FROM report_accounting
-WHERE YEAR(date) = ? AND MONTH(date) = ?
+WHERE year = ? AND month = ?
 `
 
 type GetMonthReportParams struct {
-	Date   time.Time
-	Date_2 time.Time
+	Year  int32
+	Month int32
 }
 
 type GetMonthReportRow struct {
@@ -46,7 +54,7 @@ type GetMonthReportRow struct {
 }
 
 func (q *Queries) GetMonthReport(ctx context.Context, arg GetMonthReportParams) ([]GetMonthReportRow, error) {
-	rows, err := q.db.QueryContext(ctx, getMonthReport, arg.Date, arg.Date_2)
+	rows, err := q.db.QueryContext(ctx, getMonthReport, arg.Year, arg.Month)
 	if err != nil {
 		return nil, err
 	}

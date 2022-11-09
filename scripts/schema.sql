@@ -6,9 +6,11 @@ CREATE TABLE IF NOT EXISTS accounts (
 );
 
 CREATE TABLE IF NOT EXISTS report_accounting (
-    service_id BIGINT UNSIGNED UNIQUE NOT NULL PRIMARY KEY,
-    date DATE NOT NULL,
-    income INT UNSIGNED NOT NULL
+    service_id BIGINT UNSIGNED UNIQUE NOT NULL,
+    year YEAR NOT NULL,
+    month SMALLINT UNSIGNED NOT NULL,
+    income INT UNSIGNED NOT NULL,
+    PRIMARY KEY (service_id, year, month)
 );
 
 CREATE TABLE IF NOT EXISTS reserved_accounts (

@@ -31,7 +31,7 @@ func RunDB() (*sql.DB, error) {
 	return db, nil
 }
 
-func (d *DatabaseAdapter) ExecTx(ctx context.Context, fn func(queries *sqlc.Queries) error) error {
+func (d *DatabaseAdapter) execTx(ctx context.Context, fn func(queries *sqlc.Queries) error) error {
 	tx, err := d.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err

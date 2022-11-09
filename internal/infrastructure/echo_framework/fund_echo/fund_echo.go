@@ -21,7 +21,7 @@ type Fund interface {
 }
 
 type Handler struct {
-	f Fund
+	fund Fund
 }
 
 func NewFundHandler(f Fund) *Handler {
@@ -37,7 +37,7 @@ func (h *Handler) Accrue(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	err = h.f.Accrue(ctx.Request().Context(), accrual)
+	err = h.fund.Accrue(ctx.Request().Context(), accrual)
 	if err != nil {
 		log.Error(err)
 		return ctx.JSON(http.StatusBadRequest, err.Error())
@@ -55,7 +55,7 @@ func (h *Handler) Reservation(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	err = h.f.Reservation(ctx.Request().Context(), reservation)
+	err = h.fund.Reservation(ctx.Request().Context(), reservation)
 	if err != nil {
 		log.Error(err)
 		return ctx.JSON(http.StatusBadRequest, err.Error())
@@ -73,7 +73,7 @@ func (h *Handler) AcceptPayment(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	err = h.f.AcceptPayment(ctx.Request().Context(), reservation)
+	err = h.fund.AcceptPayment(ctx.Request().Context(), reservation)
 	if err != nil {
 		log.Error(err)
 		return ctx.JSON(http.StatusBadRequest, err.Error())
@@ -91,7 +91,7 @@ func (h *Handler) RejectPayment(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	err = h.f.RejectPayment(ctx.Request().Context(), reservation)
+	err = h.fund.RejectPayment(ctx.Request().Context(), reservation)
 	if err != nil {
 		log.Error(err)
 		return ctx.JSON(http.StatusBadRequest, err.Error())
@@ -109,7 +109,7 @@ func (h *Handler) GetBalance(ctx echo.Context) error {
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	account.Balance, err = h.f.GetBalance(ctx.Request().Context(), account)
+	account.Balance, err = h.fund.GetBalance(ctx.Request().Context(), account)
 	if err != nil {
 		log.Error(err)
 		return ctx.JSON(http.StatusBadRequest, err.Error())

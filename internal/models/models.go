@@ -20,3 +20,13 @@ type Account struct {
 	UserID  types.UserID `json:"user_id"`
 	Balance types.Balance
 }
+
+type ReportDate struct {
+	Year  types.Year  `json:"year"`
+	Month types.Month `json:"month"`
+}
+
+type AccountingReport struct {
+	ServiceID types.ServiceID
+	Income    types.Income
+}
