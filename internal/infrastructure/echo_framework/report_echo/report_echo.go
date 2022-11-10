@@ -3,6 +3,8 @@ package report_echo
 import (
 	"context"
 	"net/http"
+	"net/url"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
@@ -12,7 +14,7 @@ import (
 
 type Report interface {
 	Accounting(ctx context.Context, reportDate models.ReportDate) (string, error)
-	TransactionsHistory() error
+	TransactionsHistory(ctx context.Context, transactionsHistoryParams models.TransactionsHistoryParams) (string, error)
 }
 
 type Handler struct {
@@ -42,5 +44,48 @@ func (h *Handler) Accounting(ctx echo.Context) error {
 }
 
 func (h *Handler) TransactionsHistory(ctx echo.Context) error {
-	return nil
+	queryParamsMap := ctx.QueryParams()
+
+	queryParams, err := marshalQueryParamsInStruct(queryParamsMap)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	err = ctx.Bind(&queryParams)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	transactionsHistory, err := h.r.TransactionsHistory(ctx.Request().Context(), queryParams)
+	if err != nil {
+		log.Error(err)
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return ctx.String(http.StatusOK, transactionsHistory)
+}
+
+func marshalQueryParamsInStruct(queryParamsMap url.Values) (models.TransactionsHistoryParams, error) {
+	var queryParams = models.TransactionsHistoryParams{}
+
+	for key, queryParam := range queryParamsMap {
+		intQueryParam, err := strconv.Atoi(queryParam[0])
+		if err != nil {
+			return models.TransactionsHistoryParams{}, err
+		}
+
+		switch key {
+		case "sortDate":
+			queryParams.SortDate = intQueryParam
+		case "sortSum":
+			queryParams.SortSum = intQueryParam
+		case "limit":
+			queryParams.Limit = intQueryParam
+		case "page":
+			queryParams.Page = intQueryParam
+		}
+	}
+	return queryParams, nil
 }

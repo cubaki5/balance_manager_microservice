@@ -3,6 +3,7 @@ package adapter
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"balance_avito/internal/infrastructure/sql_database/generated/sqlc"
@@ -16,6 +17,17 @@ func (d *DatabaseAdapter) Accrue(ctx context.Context, accrual models.Accrual) er
 			UserID:    accrual.UserID.Int64(),
 			Balance:   accrual.Income.Int32(),
 			Balance_2: accrual.Income.Int32(),
+		})
+		if err != nil {
+			return err
+		}
+
+		err = q.CreateTransactionRow(ctx, sqlc.CreateTransactionRowParams{
+			UserID:    accrual.UserID.Int64(),
+			Operation: accrue,
+			Comments:  accrueComment,
+			Time:      time.Now(),
+			Sum:       accrual.Income.Int32(),
 		})
 
 		return err
@@ -74,6 +86,17 @@ func (d *DatabaseAdapter) AcceptPayment(ctx context.Context, reservation models.
 			Income:    reservation.Cost.Int32(),
 			Income_2:  reservation.Cost.Int32(),
 		})
+		if err != nil {
+			return err
+		}
+
+		err = q.CreateTransactionRow(ctx, sqlc.CreateTransactionRowParams{
+			UserID:    reservation.UserID.Int64(),
+			Operation: acceptance,
+			Comments:  fmt.Sprintf(acceptanceComment, reservation.OrderID, reservation.ServiceID),
+			Time:      time.Now(),
+			Sum:       reservation.Cost.Int32(),
+		})
 
 		return err
 	})
@@ -95,6 +118,17 @@ func (d *DatabaseAdapter) RejectPayment(ctx context.Context, reservation models.
 		err = q.ReturnMoney(ctx, sqlc.ReturnMoneyParams{
 			Balance: reservation.Cost.Int32(),
 			UserID:  reservation.UserID.Int64(),
+		})
+		if err != nil {
+			return err
+		}
+
+		err = q.CreateTransactionRow(ctx, sqlc.CreateTransactionRowParams{
+			UserID:    reservation.UserID.Int64(),
+			Operation: rejection,
+			Comments:  fmt.Sprintf(rejectionComment, reservation.OrderID, reservation.ServiceID),
+			Time:      time.Now(),
+			Sum:       reservation.Cost.Int32(),
 		})
 
 		return err

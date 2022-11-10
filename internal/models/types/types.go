@@ -12,7 +12,17 @@ type (
 	Balance   int32
 	Year      int32
 	Month     int32
+	Operation string
+	Comment   string
 )
+
+func (i Comment) String() string {
+	return string(i)
+}
+
+func (i Operation) String() string {
+	return string(i)
+}
 
 func (i Income) String() string {
 	return strconv.Itoa(int(i))

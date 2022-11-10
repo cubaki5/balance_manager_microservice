@@ -5,7 +5,7 @@
 package sqlc
 
 import (
-	"database/sql"
+	"time"
 )
 
 type Account struct {
@@ -32,7 +32,7 @@ type TransactionsHistory struct {
 	ID        int64
 	UserID    int64
 	Operation string
-	Comments  sql.NullString
-	Time      sql.NullTime
+	Comments  string
+	Time      time.Time
 	Sum       int32
 }

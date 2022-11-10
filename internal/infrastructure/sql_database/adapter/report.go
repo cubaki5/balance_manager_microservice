@@ -24,17 +24,36 @@ func (d *DatabaseAdapter) Accounting(ctx context.Context, reportDate models.Repo
 		return nil, err
 	}
 
-	accountringReports := convertDBReportsToModels(dbReports)
+	accountringReports := convertDBReportToModels(dbReports)
 
 	return accountringReports, err
 }
 
-func (d *DatabaseAdapter) TransactionsHistory() error {
-	//TODO implement me
-	panic("implement me")
+func (d *DatabaseAdapter) TransactionsHistory(ctx context.Context, transHistoryParams models.TransactionsHistoryParams) ([]models.TransactionsHistory, error) {
+	var (
+		dbReports []sqlc.GetTransactionsReportRow
+		err       error
+	)
+	err = d.execTx(ctx, func(q *sqlc.Queries) error {
+		dbReports, err = q.GetTransactionsReport(ctx, sqlc.GetTransactionsReportParams{
+			SortDate: transHistoryParams.SortDate,
+			SortSum:  transHistoryParams.SortSum,
+			UserID:   transHistoryParams.UserID.Int64(),
+			Limit:    transHistoryParams.Limit,
+			Offset:   (transHistoryParams.Page - 1) * transHistoryParams.Limit,
+		})
+		return err
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	accountringReports := convertDBHistoryToModels(dbReports)
+
+	return accountringReports, err
 }
 
-func convertDBReportsToModels(dbReports []sqlc.GetMonthReportRow) []models.AccountingReport {
+func convertDBReportToModels(dbReports []sqlc.GetMonthReportRow) []models.AccountingReport {
 	var accountingReports = make([]models.AccountingReport, len(dbReports))
 
 	for i := range dbReports {
@@ -45,4 +64,17 @@ func convertDBReportsToModels(dbReports []sqlc.GetMonthReportRow) []models.Accou
 	}
 
 	return accountingReports
+}
+
+func convertDBHistoryToModels(dbHistory []sqlc.GetTransactionsReportRow) []models.TransactionsHistory {
+	var transactionHistory = make([]models.TransactionsHistory, len(dbHistory))
+
+	for i := range dbHistory {
+		transactionHistory[i].Operation = types.Operation(dbHistory[i].Operation)
+		transactionHistory[i].Sum = types.Income(dbHistory[i].Sum)
+		transactionHistory[i].Time = dbHistory[i].Time
+		transactionHistory[i].Comments = types.Comment(dbHistory[i].Comments)
+	}
+
+	return transactionHistory
 }

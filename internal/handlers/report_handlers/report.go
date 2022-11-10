@@ -6,14 +6,17 @@ import (
 	"balance_avito/internal/models"
 )
 
-type GoCSVAdapter interface {
-	MarshalStructToCSV([]models.AccountingReport) (string, error)
-}
+type (
+	GoCSVAdapter interface {
+		MarshalStructHistoryToCSV(transactionsHistory []models.TransactionsHistory) (string, error)
+		MarshalStructReportToCSV(report []models.AccountingReport) (string, error)
+	}
 
-type Database interface {
-	Accounting(ctx context.Context, reportDate models.ReportDate) ([]models.AccountingReport, error)
-	TransactionsHistory() error
-}
+	Database interface {
+		Accounting(ctx context.Context, reportDate models.ReportDate) ([]models.AccountingReport, error)
+		TransactionsHistory(ctx context.Context, transactionsHistoryParams models.TransactionsHistoryParams) ([]models.TransactionsHistory, error)
+	}
+)
 
 type Report struct {
 	db    Database
@@ -30,7 +33,7 @@ func (r *Report) Accounting(ctx context.Context, reportDate models.ReportDate) (
 		return "", err
 	}
 
-	report, err := r.gocsv.MarshalStructToCSV(accountReports)
+	report, err := r.gocsv.MarshalStructReportToCSV(accountReports)
 	if err != nil {
 		return "", err
 	}
@@ -38,7 +41,16 @@ func (r *Report) Accounting(ctx context.Context, reportDate models.ReportDate) (
 	return report, nil
 }
 
-func (r *Report) TransactionsHistory() error {
-	//TODO implement me
-	panic("implement me")
+func (r *Report) TransactionsHistory(ctx context.Context, transactionsHistoryParams models.TransactionsHistoryParams) (string, error) {
+	transactionsHistory, err := r.db.TransactionsHistory(ctx, transactionsHistoryParams)
+	if err != nil {
+		return "", err
+	}
+
+	transactionsHistoryCSV, err := r.gocsv.MarshalStructHistoryToCSV(transactionsHistory)
+	if err != nil {
+		return "", err
+	}
+
+	return transactionsHistoryCSV, nil
 }

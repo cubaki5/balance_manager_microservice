@@ -4,8 +4,3 @@ INSERT INTO transactions_history (
 ) VALUE (
          ?, ?, ?, ?, ?
     );
-
--- name: GetTransactionsReport :many
-SELECT operation, comments, time, sum
-FROM transactions_history
-WHERE user_id = ?;

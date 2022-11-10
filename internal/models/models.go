@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"balance_avito/internal/models/types"
 )
 
@@ -29,4 +31,19 @@ type ReportDate struct {
 type AccountingReport struct {
 	ServiceID types.ServiceID
 	Income    types.Income
+}
+
+type TransactionsHistoryParams struct {
+	UserID   types.UserID `json:"user_id"`
+	SortDate int
+	SortSum  int
+	Page     int
+	Limit    int
+}
+
+type TransactionsHistory struct {
+	Operation types.Operation
+	Comments  types.Comment
+	Time      time.Time
+	Sum       types.Income
 }

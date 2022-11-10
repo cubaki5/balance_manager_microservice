@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS transactions_history(
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT UNSIGNED NOT NULL,
     operation TEXT NOT NULL,
-    comments TEXT,
-    time DATETIME,
+    comments TEXT NOT NULL,
+    time DATETIME NOT NULL,
     sum MEDIUMINT UNSIGNED NOT NULL,
     FOREIGN KEY (user_id) REFERENCES accounts(user_id),
     CHECK ( operation IN ('начисление', 'списание', 'возврат'))

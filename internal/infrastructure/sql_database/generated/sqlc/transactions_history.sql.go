@@ -7,7 +7,7 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
 const createTransactionRow = `-- name: CreateTransactionRow :exec
@@ -21,8 +21,8 @@ INSERT INTO transactions_history (
 type CreateTransactionRowParams struct {
 	UserID    int64
 	Operation string
-	Comments  sql.NullString
-	Time      sql.NullTime
+	Comments  string
+	Time      time.Time
 	Sum       int32
 }
 
@@ -35,45 +35,4 @@ func (q *Queries) CreateTransactionRow(ctx context.Context, arg CreateTransactio
 		arg.Sum,
 	)
 	return err
-}
-
-const getTransactionsReport = `-- name: GetTransactionsReport :many
-SELECT operation, comments, time, sum
-FROM transactions_history
-WHERE user_id = ?
-`
-
-type GetTransactionsReportRow struct {
-	Operation string
-	Comments  sql.NullString
-	Time      sql.NullTime
-	Sum       int32
-}
-
-func (q *Queries) GetTransactionsReport(ctx context.Context, userID int64) ([]GetTransactionsReportRow, error) {
-	rows, err := q.db.QueryContext(ctx, getTransactionsReport, userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []GetTransactionsReportRow
-	for rows.Next() {
-		var i GetTransactionsReportRow
-		if err := rows.Scan(
-			&i.Operation,
-			&i.Comments,
-			&i.Time,
-			&i.Sum,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }
