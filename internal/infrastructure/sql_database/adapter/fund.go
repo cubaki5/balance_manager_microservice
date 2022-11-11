@@ -39,10 +39,10 @@ func (d *DatabaseAdapter) Reservation(ctx context.Context, reservation models.Re
 	err := d.execTx(ctx, func(q *sqlc.Queries) error {
 		dbAccount, err := q.GetAccount(ctx, reservation.UserID.Int64())
 		if err != nil {
-			return err
+			return errors.New("аккаунт не существует")
 		}
 
-		if dbAccount.Balance > reservation.Cost.Int32() {
+		if dbAccount.Balance >= reservation.Cost.Int32() {
 			err = q.WriteOffMoney(ctx, sqlc.WriteOffMoneyParams{
 				Balance: reservation.Cost.Int32(),
 				UserID:  reservation.UserID.Int64(),
@@ -51,7 +51,7 @@ func (d *DatabaseAdapter) Reservation(ctx context.Context, reservation models.Re
 				return err
 			}
 		} else {
-			return errors.New("not enough funds on balance")
+			return errors.New("недостаточно средств")
 		}
 
 		err = q.CreateReservedAccount(ctx, sqlc.CreateReservedAccountParams{
@@ -69,9 +69,14 @@ func (d *DatabaseAdapter) Reservation(ctx context.Context, reservation models.Re
 
 func (d *DatabaseAdapter) AcceptPayment(ctx context.Context, reservation models.Reservation) error {
 	err := d.execTx(ctx, func(q *sqlc.Queries) error {
-		_, err := q.GetReservedAccount(ctx, reservation.OrderID.Int64())
+		_, err := q.GetReservedAccount(ctx, sqlc.GetReservedAccountParams{
+			UserID:    reservation.UserID.Int64(),
+			OrderID:   reservation.OrderID.Int64(),
+			ServiceID: reservation.ServiceID.Int64(),
+			Cost:      reservation.Cost.Int32(),
+		})
 		if err != nil {
-			return err
+			return errors.New("резервирование средств по данной операции не проводилось")
 		}
 
 		err = q.DeleteReservedAccount(ctx, reservation.OrderID.Int64())
@@ -105,9 +110,14 @@ func (d *DatabaseAdapter) AcceptPayment(ctx context.Context, reservation models.
 
 func (d *DatabaseAdapter) RejectPayment(ctx context.Context, reservation models.Reservation) error {
 	err := d.execTx(ctx, func(q *sqlc.Queries) error {
-		_, err := q.GetReservedAccount(ctx, reservation.OrderID.Int64())
+		_, err := q.GetReservedAccount(ctx, sqlc.GetReservedAccountParams{
+			UserID:    reservation.UserID.Int64(),
+			OrderID:   reservation.OrderID.Int64(),
+			ServiceID: reservation.ServiceID.Int64(),
+			Cost:      reservation.Cost.Int32(),
+		})
 		if err != nil {
-			return err
+			return errors.New("резервирование средств по данной операции не проводилось")
 		}
 
 		err = q.DeleteReservedAccount(ctx, reservation.OrderID.Int64())
@@ -141,7 +151,7 @@ func (d *DatabaseAdapter) GetBalance(ctx context.Context, account models.Account
 		dbAccount, err := q.GetAccount(ctx, account.UserID.Int64())
 		if err != nil {
 			account = models.Account{}
-			return err
+			return errors.New("аккаунт не существует")
 		}
 
 		account.Balance = types.Balance(dbAccount.Balance)

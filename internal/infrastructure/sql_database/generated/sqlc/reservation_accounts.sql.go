@@ -46,11 +46,23 @@ func (q *Queries) DeleteReservedAccount(ctx context.Context, orderID int64) erro
 
 const getReservedAccount = `-- name: GetReservedAccount :one
 SELECT id, user_id, order_id, service_id, cost FROM reserved_accounts
-WHERE order_id = ? LIMIT 1
+WHERE user_id = ? AND order_id = ? AND service_id = ? AND cost = ? LIMIT 1
 `
 
-func (q *Queries) GetReservedAccount(ctx context.Context, orderID int64) (ReservedAccount, error) {
-	row := q.db.QueryRowContext(ctx, getReservedAccount, orderID)
+type GetReservedAccountParams struct {
+	UserID    int64
+	OrderID   int64
+	ServiceID int64
+	Cost      int32
+}
+
+func (q *Queries) GetReservedAccount(ctx context.Context, arg GetReservedAccountParams) (ReservedAccount, error) {
+	row := q.db.QueryRowContext(ctx, getReservedAccount,
+		arg.UserID,
+		arg.OrderID,
+		arg.ServiceID,
+		arg.Cost,
+	)
 	var i ReservedAccount
 	err := row.Scan(
 		&i.ID,

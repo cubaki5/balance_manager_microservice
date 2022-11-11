@@ -3,14 +3,13 @@ package main
 import (
 	"log"
 
-	go_csv_adapter "balance_avito/internal/infrastructure/gocsv/adapter"
-
 	"github.com/labstack/echo/v4"
 
 	"balance_avito/internal/handlers/fund_handlers"
 	"balance_avito/internal/handlers/report_handlers"
 	"balance_avito/internal/infrastructure/echo_framework/fund_echo"
 	"balance_avito/internal/infrastructure/echo_framework/report_echo"
+	gocsv_adapter "balance_avito/internal/infrastructure/gocsv/adapter"
 	"balance_avito/internal/infrastructure/sql_database/adapter"
 )
 
@@ -21,7 +20,7 @@ func main() {
 	}
 
 	dbAdapter := adapter.NewDatabaseAdapter(db)
-	goCSVAdapter := go_csv_adapter.NewGoSCVAdapter()
+	goCSVAdapter := gocsv_adapter.NewGoSCVAdapter()
 
 	fund := fund_handlers.NewFund(dbAdapter)
 	report := report_handlers.NewReport(dbAdapter, goCSVAdapter)

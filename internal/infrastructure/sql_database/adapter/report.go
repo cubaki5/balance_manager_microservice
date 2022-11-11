@@ -24,9 +24,9 @@ func (d *DatabaseAdapter) Accounting(ctx context.Context, reportDate models.Repo
 		return nil, err
 	}
 
-	accountringReports := convertDBReportToModels(dbReports)
+	accountingReports := convertDBReportToModels(dbReports)
 
-	return accountringReports, err
+	return accountingReports, err
 }
 
 func (d *DatabaseAdapter) TransactionsHistory(ctx context.Context, transHistoryParams models.TransactionsHistoryParams) ([]models.TransactionsHistory, error) {

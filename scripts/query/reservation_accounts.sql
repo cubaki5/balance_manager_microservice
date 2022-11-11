@@ -11,4 +11,4 @@ INSERT INTO reserved_accounts (
 
 -- name: GetReservedAccount :one
 SELECT * FROM reserved_accounts
-WHERE order_id = ? LIMIT 1;
+WHERE user_id = ? AND order_id = ? AND service_id = ? AND cost = ? LIMIT 1;

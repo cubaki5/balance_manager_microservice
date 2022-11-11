@@ -7,4 +7,7 @@ const (
 	acceptanceComment = "оплата заказа №%d по покупке %d"
 	rejection         = "возврат"
 	rejectionComment  = "возврат стоимости заказа №%d по покупке %d"
+
+	mysql          = "mysql"
+	dataSourceName = "cub:scamt@/usersbalance?parseTime=true"
 )

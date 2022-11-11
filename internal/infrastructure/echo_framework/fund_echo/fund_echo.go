@@ -4,9 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"balance_avito/internal/models/types"
-
 	"balance_avito/internal/models"
+	"balance_avito/internal/models/types"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
