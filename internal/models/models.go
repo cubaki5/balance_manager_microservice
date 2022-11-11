@@ -34,6 +34,17 @@ type AccountingReport struct {
 	Income    types.Income
 }
 
+type HistoryQueryParams struct {
+	SortDate int
+	SortSum  int
+	Page     int
+	Limit    int
+}
+
+type HistoryBodyParams struct {
+	UserID types.UserID `json:"user_id"`
+}
+
 type TransactionsHistoryParams struct {
 	UserID   types.UserID `json:"user_id"`
 	SortDate int

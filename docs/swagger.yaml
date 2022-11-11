@@ -1,0 +1,229 @@
+basePath: /
+definitions:
+  models.Account:
+    properties:
+      balance:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  models.Accrual:
+    properties:
+      income:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  models.HistoryBodyParams:
+    properties:
+      user_id:
+        type: integer
+    type: object
+  models.ReportDate:
+    properties:
+      month:
+        type: integer
+      year:
+        type: integer
+    type: object
+  models.Reservation:
+    properties:
+      cost:
+        type: integer
+      order_id:
+        type: integer
+      service_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+host: localhost:1323
+info:
+  contact:
+    name: Strykanova Vera
+    url: https://tlgg.ru/verastryka
+  description: Avito backend test task
+  title: Microservice for balance management
+  version: "1.0"
+paths:
+  /fund/accrual:
+    post:
+      consumes:
+      - application/json
+      description: accrual income to the account with given user_id
+      parameters:
+      - description: user_id and income to accrual
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.Accrual'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Accrue
+      tags:
+      - fund
+  /fund/balance:
+    get:
+      consumes:
+      - application/json
+      description: returns balance of account with given user_id
+      parameters:
+      - description: user_id to get balance
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.Account'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: GetBalance
+      tags:
+      - fund
+  /fund/payment_acceptance:
+    post:
+      consumes:
+      - application/json
+      description: accept payment and save it in history
+      parameters:
+      - description: user_id, service_id, order_id and cost to accept
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.Reservation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: AcceptPayment
+      tags:
+      - fund
+  /fund/payment_rejection:
+    post:
+      consumes:
+      - application/json
+      description: reject payment, returns funds to account and save it in history
+      parameters:
+      - description: user_id, service_id, order_id and cost to reject
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.Reservation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: RejectPayment
+      tags:
+      - fund
+  /fund/reservation:
+    post:
+      consumes:
+      - application/json
+      description: reserve money on account with given user_id for given order_id
+        and service_id
+      parameters:
+      - description: user_id, service_id, order_id and cost to reserve
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.Reservation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Reservation
+      tags:
+      - fund
+  /report/accounting:
+    get:
+      consumes:
+      - application/json
+      description: returns an accounting report of giving date
+      parameters:
+      - description: specific year and month
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.ReportDate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: Accounting
+      tags:
+      - report
+  /report/transactions_history:
+    get:
+      consumes:
+      - application/json
+      description: returns a transaction history of account with given user_id
+      parameters:
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: sortDate
+        type: integer
+      - in: query
+        name: sortSum
+        type: integer
+      - description: user_id to get history
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.HistoryBodyParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema: {}
+      summary: TransactionsHistory
+      tags:
+      - report
+swagger: "2.0"

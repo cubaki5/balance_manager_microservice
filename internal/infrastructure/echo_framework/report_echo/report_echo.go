@@ -25,6 +25,15 @@ func NewReportHandler(r Report) *Handler {
 	return &Handler{r}
 }
 
+// @Summary     Accounting
+// @Tags        report
+// @Description returns an accounting report of giving date
+// @Accept      json
+// @Produce     json
+// @Param       input body models.ReportDate true "specific year and month"
+// @Success     200 {string} string
+// @Failure     400 {object} error
+// @Router      /report/accounting [get]
 func (h *Handler) Accounting(ctx echo.Context) error {
 	var reportDate models.ReportDate
 
@@ -43,6 +52,16 @@ func (h *Handler) Accounting(ctx echo.Context) error {
 	return ctx.String(http.StatusOK, report)
 }
 
+// @Summary     TransactionsHistory
+// @Tags        report
+// @Description returns a transaction history of account with given user_id
+// @Accept      json
+// @Produce     json
+// @Param		input query models.HistoryQueryParams true "Sorts, page and limit"
+// @Param       input body models.HistoryBodyParams true "user_id to get history"
+// @Success     200 {string} string
+// @Failure     400 {object} error
+// @Router      /report/transactions_history [get]
 func (h *Handler) TransactionsHistory(ctx echo.Context) error {
 	queryParamsMap := ctx.QueryParams()
 
