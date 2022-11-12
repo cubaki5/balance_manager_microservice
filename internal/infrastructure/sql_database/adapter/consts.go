@@ -9,5 +9,5 @@ const (
 	rejectionComment  = "возврат стоимости заказа №%d по покупке %d"
 
 	mysql          = "mysql"
-	dataSourceName = "cub:scamt@/usersbalance?parseTime=true"
+	dataSourceName = "avito:password@tcp(db:3306)/usersbalance?parseTime=true"
 )
