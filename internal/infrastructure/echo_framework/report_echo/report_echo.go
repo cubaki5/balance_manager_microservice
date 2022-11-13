@@ -6,12 +6,11 @@ import (
 	"net/url"
 	"strconv"
 
+	"balance_avito/internal/models"
 	"balance_avito/internal/models/types"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
-
-	"balance_avito/internal/models"
 )
 
 //go:generate mockgen --source=report_echo.go --destination=mocks/mock_report_echo.go --package=mocks
