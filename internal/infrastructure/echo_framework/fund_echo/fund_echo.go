@@ -11,6 +11,8 @@ import (
 	"github.com/labstack/gommon/log"
 )
 
+//go:generate mockgen --source=fund_echo.go --destination=mocks/mock_fund_echo.go --package=mocks
+
 type Fund interface {
 	Accrue(ctx context.Context, accrual models.Accrual) error
 	Reservation(ctx context.Context, reservation models.Reservation) error

@@ -14,6 +14,8 @@ import (
 	"balance_avito/internal/models"
 )
 
+//go:generate mockgen --source=report_echo.go --destination=mocks/mock_report_echo.go --package=mocks
+
 type Report interface {
 	Accounting(ctx context.Context, reportDate models.ReportDate) (string, error)
 	TransactionsHistory(ctx context.Context, transactionsHistoryParams models.TransactionsHistoryParams) (string, error)
@@ -121,6 +123,7 @@ func marshalReportDate(reportDateDTO dtoReportDate) models.ReportDate {
 	var reportDate models.ReportDate
 
 	reportDate.Year = types.Year(reportDateDTO.Year)
+	reportDate.Month = types.Month(reportDateDTO.Month)
 
 	return reportDate
 }
