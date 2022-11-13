@@ -178,7 +178,7 @@ func TestFund_Reservation_Accept_RejectPayment(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+		t.Run(test.name+" reserve", func(t *testing.T) {
 			mockDB := initDatabaseMock(t)
 			fund := NewFund(mockDB)
 
@@ -192,7 +192,7 @@ func TestFund_Reservation_Accept_RejectPayment(t *testing.T) {
 		})
 	}
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+		t.Run(test.name+" reject", func(t *testing.T) {
 			mockDB := initDatabaseMock(t)
 			fund := NewFund(mockDB)
 
@@ -206,12 +206,12 @@ func TestFund_Reservation_Accept_RejectPayment(t *testing.T) {
 		})
 	}
 	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
+		t.Run(test.name+" accept", func(t *testing.T) {
 			mockDB := initDatabaseMock(t)
 			fund := NewFund(mockDB)
 
 			ctx := context.Background()
-			if test.name == "Happy Path" || test.name == "Interface returns err" {
+			if test.name == happyPath || test.name == "Interface returns err" {
 				mockDB.EXPECT().AcceptPayment(ctx, test.reservation).Return(test.expErr)
 			}
 			actErr := fund.AcceptPayment(ctx, test.reservation)

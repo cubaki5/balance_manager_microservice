@@ -8,25 +8,25 @@ import (
 )
 
 type Accrual struct {
-	UserID types.UserID `json:"user_id"`
-	Income types.Income `json:"income"`
+	UserID types.UserID
+	Income types.Income
 }
 
 type Reservation struct {
-	UserID    types.UserID  `json:"user_id"`
-	ServiceID types.UserID  `json:"service_id"`
-	OrderID   types.OrderID `json:"order_id"`
-	Cost      types.Cost    `json:"cost"`
+	UserID    types.UserID
+	ServiceID types.ServiceID
+	OrderID   types.OrderID
+	Cost      types.Cost
 }
 
 type Account struct {
-	UserID  types.UserID `json:"user_id"`
+	UserID  types.UserID
 	Balance types.Balance
 }
 
 type ReportDate struct {
-	Year  types.Year  `json:"year"`
-	Month types.Month `json:"month"`
+	Year  types.Year
+	Month types.Month
 }
 
 type AccountingReport struct {
@@ -34,19 +34,8 @@ type AccountingReport struct {
 	Income    types.Income
 }
 
-type HistoryQueryParams struct {
-	SortDate int
-	SortSum  int
-	Page     int
-	Limit    int
-}
-
-type HistoryBodyParams struct {
-	UserID types.UserID `json:"user_id"`
-}
-
 type TransactionsHistoryParams struct {
-	UserID   types.UserID `json:"user_id"`
+	UserID   types.UserID
 	SortDate int
 	SortSum  int
 	Page     int

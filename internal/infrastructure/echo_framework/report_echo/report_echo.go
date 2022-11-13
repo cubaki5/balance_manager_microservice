@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"strconv"
 
+	"balance_avito/internal/models/types"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 
@@ -30,18 +32,20 @@ func NewReportHandler(r Report) *Handler {
 // @Description returns an accounting report of giving date
 // @Accept      json
 // @Produce     json
-// @Param       input body models.ReportDate true "specific year and month"
+// @Param       input body dtoReportDate true "specific year and month"
 // @Success     200 {string} string
 // @Failure     400 {object} error
 // @Router      /report/accounting [get]
 func (h *Handler) Accounting(ctx echo.Context) error {
-	var reportDate models.ReportDate
+	var reportDateDTO dtoReportDate
 
-	err := ctx.Bind(&reportDate)
+	err := ctx.Bind(&reportDateDTO)
 	if err != nil {
 		log.Error(err)
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
+
+	reportDate := marshalReportDate(reportDateDTO)
 
 	report, err := h.r.Accounting(ctx.Request().Context(), reportDate)
 	if err != nil {
@@ -57,27 +61,29 @@ func (h *Handler) Accounting(ctx echo.Context) error {
 // @Description returns a transaction history of account with given user_id
 // @Accept      json
 // @Produce     json
-// @Param		input query models.HistoryQueryParams true "Sorts, page and limit"
-// @Param       input body models.HistoryBodyParams true "user_id to get history"
+// @Param		input query DtoHistoryQueryParams true "Sorts, page and limit"
+// @Param       input body dtoHistoryBodyParams true "user_id to get history"
 // @Success     200 {string} string
 // @Failure     400 {object} error
 // @Router      /report/transactions_history [get]
 func (h *Handler) TransactionsHistory(ctx echo.Context) error {
-	queryParamsMap := ctx.QueryParams()
+	queryParamsDTO := ctx.QueryParams()
 
-	queryParams, err := marshalQueryParamsInStruct(queryParamsMap)
+	var bodyParamsDTO dtoHistoryBodyParams
+
+	err := ctx.Bind(&bodyParamsDTO)
 	if err != nil {
 		log.Error(err)
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	err = ctx.Bind(&queryParams)
+	historyParams, err := marshalQueryAndBodyParams(queryParamsDTO, bodyParamsDTO)
 	if err != nil {
 		log.Error(err)
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	transactionsHistory, err := h.r.TransactionsHistory(ctx.Request().Context(), queryParams)
+	transactionsHistory, err := h.r.TransactionsHistory(ctx.Request().Context(), historyParams)
 	if err != nil {
 		log.Error(err)
 		return ctx.JSON(http.StatusBadRequest, err.Error())
@@ -86,8 +92,8 @@ func (h *Handler) TransactionsHistory(ctx echo.Context) error {
 	return ctx.String(http.StatusOK, transactionsHistory)
 }
 
-func marshalQueryParamsInStruct(queryParamsMap url.Values) (models.TransactionsHistoryParams, error) {
-	var queryParams = models.TransactionsHistoryParams{}
+func marshalQueryAndBodyParams(queryParamsMap url.Values, bodyParamsDTO dtoHistoryBodyParams) (models.TransactionsHistoryParams, error) {
+	var historyParams = models.TransactionsHistoryParams{}
 
 	for key, queryParam := range queryParamsMap {
 		intQueryParam, err := strconv.Atoi(queryParam[0])
@@ -97,14 +103,24 @@ func marshalQueryParamsInStruct(queryParamsMap url.Values) (models.TransactionsH
 
 		switch key {
 		case "sortDate":
-			queryParams.SortDate = intQueryParam
+			historyParams.SortDate = intQueryParam
 		case "sortSum":
-			queryParams.SortSum = intQueryParam
+			historyParams.SortSum = intQueryParam
 		case "limit":
-			queryParams.Limit = intQueryParam
+			historyParams.Limit = intQueryParam
 		case "page":
-			queryParams.Page = intQueryParam
+			historyParams.Page = intQueryParam
 		}
 	}
-	return queryParams, nil
+
+	historyParams.UserID = types.UserID(bodyParamsDTO.UserID)
+	return historyParams, nil
+}
+
+func marshalReportDate(reportDateDTO dtoReportDate) models.ReportDate {
+	var reportDate models.ReportDate
+
+	reportDate.Year = types.Year(reportDateDTO.Year)
+
+	return reportDate
 }

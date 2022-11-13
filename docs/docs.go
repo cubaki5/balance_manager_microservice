@@ -39,7 +39,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Accrual"
+                            "$ref": "#/definitions/fund_echo.dtoAccrual"
                         }
                     }
                 ],
@@ -74,7 +74,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Account"
+                            "$ref": "#/definitions/fund_echo.dtoAccount"
                         }
                     }
                 ],
@@ -112,7 +112,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Reservation"
+                            "$ref": "#/definitions/fund_echo.dtoReservation"
                         }
                     }
                 ],
@@ -147,7 +147,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Reservation"
+                            "$ref": "#/definitions/fund_echo.dtoReservation"
                         }
                     }
                 ],
@@ -182,7 +182,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Reservation"
+                            "$ref": "#/definitions/fund_echo.dtoReservation"
                         }
                     }
                 ],
@@ -217,7 +217,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.ReportDate"
+                            "$ref": "#/definitions/report_echo.dtoReportDate"
                         }
                     }
                 ],
@@ -275,7 +275,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.HistoryBodyParams"
+                            "$ref": "#/definitions/report_echo.dtoHistoryBodyParams"
                         }
                     }
                 ],
@@ -295,18 +295,15 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "models.Account": {
+        "fund_echo.dtoAccount": {
             "type": "object",
             "properties": {
-                "balance": {
-                    "type": "integer"
-                },
                 "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "models.Accrual": {
+        "fund_echo.dtoAccrual": {
             "type": "object",
             "properties": {
                 "income": {
@@ -317,26 +314,7 @@ const docTemplate = `{
                 }
             }
         },
-        "models.HistoryBodyParams": {
-            "type": "object",
-            "properties": {
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.ReportDate": {
-            "type": "object",
-            "properties": {
-                "month": {
-                    "type": "integer"
-                },
-                "year": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.Reservation": {
+        "fund_echo.dtoReservation": {
             "type": "object",
             "properties": {
                 "cost": {
@@ -349,6 +327,25 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "report_echo.dtoHistoryBodyParams": {
+            "type": "object",
+            "properties": {
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "report_echo.dtoReportDate": {
+            "type": "object",
+            "properties": {
+                "month": {
+                    "type": "integer"
+                },
+                "year": {
                     "type": "integer"
                 }
             }

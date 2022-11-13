@@ -1,32 +1,18 @@
 basePath: /
 definitions:
-  models.Account:
+  fund_echo.dtoAccount:
     properties:
-      balance:
-        type: integer
       user_id:
         type: integer
     type: object
-  models.Accrual:
+  fund_echo.dtoAccrual:
     properties:
       income:
         type: integer
       user_id:
         type: integer
     type: object
-  models.HistoryBodyParams:
-    properties:
-      user_id:
-        type: integer
-    type: object
-  models.ReportDate:
-    properties:
-      month:
-        type: integer
-      year:
-        type: integer
-    type: object
-  models.Reservation:
+  fund_echo.dtoReservation:
     properties:
       cost:
         type: integer
@@ -35,6 +21,18 @@ definitions:
       service_id:
         type: integer
       user_id:
+        type: integer
+    type: object
+  report_echo.dtoHistoryBodyParams:
+    properties:
+      user_id:
+        type: integer
+    type: object
+  report_echo.dtoReportDate:
+    properties:
+      month:
+        type: integer
+      year:
         type: integer
     type: object
 host: localhost:1323
@@ -57,7 +55,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/models.Accrual'
+          $ref: '#/definitions/fund_echo.dtoAccrual'
       produces:
       - application/json
       responses:
@@ -80,7 +78,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/models.Account'
+          $ref: '#/definitions/fund_echo.dtoAccount'
       produces:
       - application/json
       responses:
@@ -105,7 +103,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/models.Reservation'
+          $ref: '#/definitions/fund_echo.dtoReservation'
       produces:
       - application/json
       responses:
@@ -128,7 +126,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/models.Reservation'
+          $ref: '#/definitions/fund_echo.dtoReservation'
       produces:
       - application/json
       responses:
@@ -152,7 +150,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/models.Reservation'
+          $ref: '#/definitions/fund_echo.dtoReservation'
       produces:
       - application/json
       responses:
@@ -175,7 +173,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/models.ReportDate'
+          $ref: '#/definitions/report_echo.dtoReportDate'
       produces:
       - application/json
       responses:
@@ -212,7 +210,7 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/models.HistoryBodyParams'
+          $ref: '#/definitions/report_echo.dtoHistoryBodyParams'
       produces:
       - application/json
       responses:
